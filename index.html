@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AquAi Sourcing Passport</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0B1E2D;min-height:100vh;color:#fff}
+
+    /* ── SEARCH BAR ── */
+    .search-bar{background:#0d2236;border-bottom:1px solid #1a3a52;padding:14px 20px;display:flex;gap:10px;align-items:center}
+    .search-bar input{flex:1;background:#132333;border:1px solid #1a3a52;border-radius:10px;padding:10px 16px;color:#fff;font-size:14px;outline:none}
+    .search-bar input::placeholder{color:#556}
+    .search-bar button{background:#00C9B1;color:#0B1E2D;border:none;border-radius:10px;padding:10px 18px;font-weight:800;font-size:13px;cursor:pointer;white-space:nowrap}
+
+    /* ── HEADER ── */
+    .header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;background:#0d2236;border-bottom:1px solid #1a3a52}
+    .logo-wrap{display:flex;align-items:center;gap:10px}
+    .logo-img{width:46px;height:46px}
+    .logo-text{font-size:24px;font-weight:900;letter-spacing:-0.5px}
+    .logo-text .aqu{color:#1a5fa8}
+    .logo-text .ai{color:#00C9B1}
+    .header-right{display:flex;gap:10px;align-items:center}
+    .eco-badge{background:#1a3a28;border:2px solid #00C9B1;border-radius:50%;width:48px;height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+    .eco-badge .grade{color:#00C9B1;font-size:20px;font-weight:900;line-height:1}
+    .eco-badge .elabel{color:#aaa;font-size:9px;text-transform:uppercase}
+    .dpp-badge{background:#1a2a3a;border:1px solid #2a4a6a;border-radius:8px;padding:6px 10px;text-align:center}
+    .dpp-badge .dtop{color:#4a9eca;font-size:9px;text-transform:uppercase;letter-spacing:0.5px;font-weight:700}
+    .dpp-badge .dbot{color:#fff;font-size:10px;font-weight:700}
+
+    /* ── PASSPORT ID ── */
+    .pid-wrap{text-align:center;padding:20px 20px 0}
+    .pid{font-size:26px;font-weight:900;color:#00C9B1;letter-spacing:3px}
+    .pid-sub{color:#556;font-size:11px;margin-top:4px;text-transform:uppercase;letter-spacing:1px}
+
+    /* ── TABS ── */
+    .tabs{display:flex;overflow-x:auto;padding:16px 20px 0;gap:8px;scrollbar-width:none}
+    .tabs::-webkit-scrollbar{display:none}
+    .tab{background:#132333;border:1px solid #1a3a52;border-radius:20px;padding:8px 16px;font-size:12px;font-weight:700;color:#aaa;cursor:pointer;white-space:nowrap;transition:all 0.2s}
+    .tab.active{background:#00C9B1;color:#0B1E2D;border-color:#00C9B1}
+
+    /* ── CONTENT ── */
+    .content{padding:16px 20px 40px;display:none}
+    .content.active{display:block}
+
+    /* ── CARDS ── */
+    .card{background:#fff;border-radius:18px;padding:18px;margin-bottom:14px;color:#102030}
+    .card-dark{background:#0d2236;border:1px solid #1a3a52;border-radius:18px;padding:18px;margin-bottom:14px}
+    .card-title{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#888;margin-bottom:12px;font-weight:700}
+    .card-title-light{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#00C9B1;margin-bottom:12px;font-weight:700}
+
+    /* ── SPECIES ── */
+    .species-name{font-size:22px;font-weight:900;color:#102030;margin-bottom:3px}
+    .species-sci{font-size:13px;font-style:italic;color:#555;margin-bottom:12px}
+    .pill{display:inline-block;border-radius:999px;padding:4px 12px;font-size:12px;font-weight:700;margin-right:6px;margin-bottom:6px}
+    .pill-green{background:#E5F8EF;color:#1a7a50}
+    .pill-blue{background:#E5F0FB;color:#1a4a8a}
+    .pill-amber{background:#FFF3E0;color:#b45a00}
+    .pill-red{background:#FFE5E5;color:#a00}
+    .pill-teal{background:#E0FAF7;color:#007a6a}
+    .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+    .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
+    .glabel{font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#888;margin-bottom:3px}
+    .gvalue{font-size:13px;font-weight:700;color:#102030}
+
+    /* ── PHOTO ── */
+    .photo-box{background:#E8EEF4;border-radius:14px;height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:14px;border:2px dashed #c0ccd8}
+    .photo-box .picon{font-size:32px;margin-bottom:8px}
+    .photo-box .ptext{color:#889;font-size:12px;font-weight:600}
+
+    /* ── WATER PARAMS ── */
+    .param-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f0f4f8}
+    .param-row:last-child{border-bottom:none}
+    .param-name{font-size:13px;color:#333;font-weight:600}
+    .param-val{font-size:14px;font-weight:800;color:#102030}
+    .param-bar{width:80px;height:6px;background:#eee;border-radius:3px;margin-top:4px;overflow:hidden}
+    .param-fill{height:100%;background:#00C9B1;border-radius:3px}
+
+    /* ── CARBON ── */
+    .carbon-wrap{display:flex;align-items:center;gap:14px}
+    .carbon-score{width:60px;height:60px;border-radius:50%;background:#E5F8EF;border:3px solid #1a7a50;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+    .carbon-score .cval{font-size:18px;font-weight:900;color:#1a7a50;line-height:1}
+    .carbon-score .cunit{font-size:9px;color:#1a7a50;font-weight:700}
+    .carbon-text p{font-size:13px;color:#333;line-height:1.5}
+    .carbon-text strong{color:#102030}
+
+    /* ── TIMELINE ── */
+    .timeline-row{display:flex;gap:12px;margin-bottom:4px}
+    .rail{display:flex;flex-direction:column;align-items:center;width:18px}
+    .dot{width:12px;height:12px;border-radius:50%;background:#00C9B1;flex-shrink:0;margin-top:3px}
+    .dot-empty{width:12px;height:12px;border-radius:50%;border:2px solid #00C9B1;flex-shrink:0;margin-top:3px;background:transparent}
+    .tline{width:2px;flex:1;background:#CFECEA;min-height:32px;margin-top:4px}
+    .custody-role{font-size:13px;font-weight:800;color:#102030}
+    .custody-role span{color:#00C9B1}
+    .custody-name{font-size:12px;font-weight:700;color:#333;margin-top:2px}
+    .custody-meta{font-size:11px;color:#777;margin-top:1px}
+    .claim-btn{display:inline-block;background:#00C9B1;color:#0B1E2D;font-size:12px;font-weight:800;padding:7px 14px;border-radius:8px;border:none;cursor:pointer;margin-top:8px}
+
+    /* ── REPUTATION ── */
+    .rep-stars{color:#f5a623;font-size:18px;letter-spacing:2px}
+    .rep-count{color:#888;font-size:12px;margin-left:6px}
+    .verified-row{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap}
+    .vtag{display:inline-flex;align-items:center;gap:4px;background:#E7FBF8;color:#00A99A;font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px}
+
+    /* ── HEALTH ── */
+    .health-item{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f0f4f8}
+    .health-item:last-child{border-bottom:none}
+    .health-label{font-size:13px;color:#333;font-weight:600}
+    .health-val{font-size:13px;font-weight:700;color:#102030;text-align:right;max-width:55%}
+    .status-ok{color:#1a7a50}
+    .status-warn{color:#b45a00}
+
+    /* ── COMPLIANCE ── */
+    .comp-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid #1a3a52}
+    .comp-item:last-child{border-bottom:none}
+    .comp-icon{font-size:20px;flex-shrink:0;margin-top:2px}
+    .comp-title{font-size:13px;font-weight:800;color:#fff;margin-bottom:3px}
+    .comp-desc{font-size:12px;color:#aaa;line-height:1.5}
+    .comp-ref{display:inline-block;background:#132333;color:#00C9B1;font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;margin-top:4px}
+
+    /* ── ACCLIMATION ── */
+    .acclim-step{display:flex;gap:12px;margin-bottom:14px}
+    .acclim-num{width:28px;height:28px;border-radius:50%;background:#00C9B1;color:#0B1E2D;font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .acclim-text .atitle{font-size:13px;font-weight:800;color:#fff;margin-bottom:3px}
+    .acclim-text .adesc{font-size:12px;color:#aaa;line-height:1.5}
+
+    /* ── BATCH ── */
+    .batch-fish{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #1a3a52}
+    .batch-fish:last-child{border-bottom:none}
+    .batch-id{font-size:13px;font-weight:700;color:#00C9B1}
+    .batch-detail{font-size:12px;color:#aaa}
+    .batch-status{font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px}
+    .bs-available{background:#1a3a28;color:#00C9B1}
+    .bs-claimed{background:#2a2a1a;color:#aaa}
+
+    /* ── WHY IT MATTERS ── */
+    .why-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .why-item{background:#132333;border-radius:14px;padding:16px}
+    .why-icon{font-size:24px;margin-bottom:8px}
+    .why-who{font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#00C9B1;margin-bottom:5px;font-weight:700}
+    .why-what{font-size:12px;color:#ccc;line-height:1.6}
+
+    /* ── QR ── */
+    .qr-section{text-align:center;padding:20px}
+    .qr-box{width:160px;height:160px;background:#fff;border-radius:14px;margin:0 auto 14px;padding:10px;display:flex;align-items:center;justify-content:center}
+    .qr-label{color:#aaa;font-size:12px;margin-bottom:12px;font-weight:600}
+    .qr-url{color:#00C9B1;font-size:11px;margin-bottom:16px;font-family:monospace}
+    .btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+    .btn-teal{background:#00C9B1;color:#0B1E2D;border:none;border-radius:10px;padding:11px 20px;font-weight:800;font-size:13px;cursor:pointer}
+    .btn-outline{background:transparent;color:#00C9B1;border:2px solid #00C9B1;border-radius:10px;padding:11px 20px;font-weight:800;font-size:13px;cursor:pointer}
+
+    /* ── DISCLAIMER ── */
+    .disclaimer{background:#0d2236;border-top:1px solid #1a3a52;padding:16px 20px;font-size:11px;color:#556;line-height:1.6}
+    .disclaimer a{color:#00C9B1;text-decoration:none}
+
+    /* ── WHY PAGE ── */
+    .why-page{padding:20px}
+    .why-hero{text-align:center;padding:24px 0 20px}
+    .why-hero h1{font-size:26px;font-weight:900;color:#fff;line-height:1.3;margin-bottom:12px}
+    .why-hero h1 span{color:#00C9B1}
+    .why-hero p{color:#aaa;font-size:14px;line-height:1.7;max-width:500px;margin:0 auto}
+    .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0}
+    .stat-box{background:#0d2236;border:1px solid #1a3a52;border-radius:14px;padding:14px;text-align:center}
+    .stat-num{font-size:24px;font-weight:900;color:#00C9B1}
+    .stat-lbl{font-size:11px;color:#aaa;margin-top:3px;line-height:1.4}
+    .how-step{display:flex;gap:14px;margin-bottom:20px;align-items:flex-start}
+    .how-num{width:36px;height:36px;border-radius:50%;background:#00C9B1;color:#0B1E2D;font-weight:900;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .how-text h3{font-size:15px;font-weight:800;color:#fff;margin-bottom:4px}
+    .how-text p{font-size:13px;color:#aaa;line-height:1.6}
+    .section-title{font-size:18px;font-weight:900;color:#fff;margin-bottom:16px}
+    .cta-box{background:linear-gradient(135deg,#00C9B1,#1565c0);border-radius:18px;padding:24px;text-align:center;margin:20px 0}
+    .cta-box h2{font-size:20px;font-weight:900;color:#fff;margin-bottom:8px}
+    .cta-box p{color:rgba(255,255,255,0.85);font-size:13px;margin-bottom:16px}
+    .cta-box button{background:#fff;color:#0B1E2D;border:none;border-radius:10px;padding:12px 28px;font-weight:900;font-size:14px;cursor:pointer}
+
+    /* ── NAV ── */
+    .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#0d2236;border-top:1px solid #1a3a52;display:flex;z-index:100}
+    .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 4px;cursor:pointer;color:#556;font-size:10px;font-weight:700;gap:3px;transition:color 0.2s}
+    .nav-item.active{color:#00C9B1}
+    .nav-icon{font-size:18px}
+    .page{display:none;padding-bottom:70px}
+    .page.active{display:block}
+
+    @media(max-width:400px){
+      .grid3{grid-template-columns:repeat(2,1fr)}
+      .why-grid{grid-template-columns:1fr}
+      .stat-row{grid-template-columns:repeat(2,1fr)}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ PAGE 1: PASSPORT ══ -->
+<div class="page active" id="page-passport">
+
+  <!-- Search -->
+  <div class="search-bar">
+    <input type="text" placeholder="Search passport ID e.g. BP-2026-001" id="searchInput"/>
+    <button onclick="searchPassport()">Verify</button>
+  </div>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo-wrap">
+      <svg class="logo-img" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+        <defs><radialGradient id="dg" cx="40%" cy="30%" r="65%"><stop offset="0%" stop-color="#4fc3f7"/><stop offset="50%" stop-color="#1565c0"/><stop offset="100%" stop-color="#0d2b5e"/></radialGradient></defs>
+        <path d="M100 10C100 10 20 100 20 145C20 187 57 210 100 210C143 210 180 187 180 145C180 100 100 10 100 10Z" fill="url(#dg)" opacity="0.95"/>
+        <g stroke="#00E5FF" stroke-width="1.8" fill="none" opacity="0.9">
+          <ellipse cx="100" cy="145" rx="32" ry="18" stroke-width="2"/>
+          <path d="M68 145L48 132L48 158Z" fill="#00E5FF" opacity="0.5"/>
+          <circle cx="118" cy="140" r="3" fill="#00E5FF"/>
+          <line x1="100" y1="127" x2="100" y2="110"/><line x1="100" y1="110" x2="90" y2="100"/><line x1="100" y1="110" x2="110" y2="100"/>
+          <line x1="90" y1="100" x2="90" y2="88"/><line x1="110" y1="100" x2="110" y2="88"/>
+          <circle cx="90" cy="86" r="3" fill="#00E5FF"/><circle cx="110" cy="86" r="3" fill="#00E5FF"/>
+          <line x1="85" y1="145" x2="70" y2="145"/><line x1="70" y1="145" x2="60" y2="138"/><line x1="70" y1="145" x2="60" y2="152"/>
+          <circle cx="58" cy="137" r="2.5" fill="#00E5FF"/><circle cx="58" cy="153" r="2.5" fill="#00E5FF"/>
+          <line x1="100" y1="163" x2="100" y2="178"/><line x1="100" y1="178" x2="88" y2="188"/><line x1="100" y1="178" x2="112" y2="188"/>
+          <circle cx="87" cy="190" r="2.5" fill="#00E5FF"/><circle cx="113" cy="190" r="2.5" fill="#00E5FF"/>
+        </g>
+        <ellipse cx="78" cy="75" rx="10" ry="18" fill="white" opacity="0.15" transform="rotate(-30 78 75)"/>
+      </svg>
+      <div class="logo-text"><span class="aqu">AQU</span><span class="ai">Ai</span></div>
+    </div>
+    <div class="header-right">
+      <div class="dpp-badge"><div class="dtop">EU DPP</div><div class="dbot">Aligned ✓</div></div>
+      <div class="eco-badge"><div class="grade">A</div><div class="elabel">Eco</div></div>
+    </div>
+  </div>
+
+  <!-- Passport ID -->
+  <div class="pid-wrap">
+    <div class="pid">BP-2026-001</div>
+    <div class="pid-sub">AquAi Sourcing Passport · Issued 08 Jun 2026</div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('overview',this)">Overview</div>
+    <div class="tab" onclick="showTab('health',this)">Health</div>
+    <div class="tab" onclick="showTab('compliance',this)">Compliance</div>
+    <div class="tab" onclick="showTab('acclimation',this)">Acclimation</div>
+    <div class="tab" onclick="showTab('batch',this)">Batch</div>
+    <div class="tab" onclick="showTab('verify',this)">Verify &amp; Share</div>
+  </div>
+
+  <!-- ── TAB: OVERVIEW ── -->
+  <div class="content active" id="tab-overview">
+
+    <!-- Photo -->
+    <div class="photo-box">
+      <div class="picon">🐠</div>
+      <div class="ptext">Fish photo uploaded by breeder</div>
+    </div>
+
+    <!-- Identity -->
+    <div class="card">
+      <div class="card-title">Animal Identity</div>
+      <div class="species-name">Siamese Fighting Fish</div>
+      <div class="species-sci">Betta splendens</div>
+      <div>
+        <span class="pill pill-green">✓ Captive Bred</span>
+        <span class="pill pill-blue">🇬🇧 UK Origin</span>
+        <span class="pill pill-teal">CITES: Not Listed</span>
+      </div>
+      <div class="grid3">
+        <div><div class="glabel">Sex</div><div class="gvalue">Male</div></div>
+        <div><div class="glabel">Date of Birth</div><div class="gvalue">Mar 2026</div></div>
+        <div><div class="glabel">Age at Sale</div><div class="gvalue">12 weeks</div></div>
+        <div><div class="glabel">Colour Form</div><div class="gvalue">Red/Blue HM</div></div>
+        <div><div class="glabel">Spawn ID</div><div class="gvalue">SP-2026-003</div></div>
+        <div><div class="glabel">Batch Size</div><div class="gvalue">18 fish</div></div>
+      </div>
+    </div>
+
+    <!-- Carbon Footprint -->
+    <div class="card">
+      <div class="card-title">Carbon Footprint</div>
+      <div class="carbon-wrap">
+        <div class="carbon-score"><div class="cval">0.2</div><div class="cunit">kg CO₂</div></div>
+        <div class="carbon-text">
+          <p><strong>Excellent.</strong> This fish was captive bred in the UK, eliminating long-haul air freight. Estimated transport distance under 50 miles.</p>
+          <p style="margin-top:6px;font-size:11px;color:#888">Wild-caught equivalent: ~8.4 kg CO₂</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Breeder -->
+    <div class="card">
+      <div class="card-title">Breeder</div>
+      <div style="font-size:17px;font-weight:800;color:#102030;margin-bottom:4px">AquAi Aquatics</div>
+      <div class="rep-stars">★★★★★<span class="rep-count">4.9 (23 verified sales)</span></div>
+      <div class="verified-row">
+        <span class="vtag">✓ Animal Activities Licence</span>
+        <span class="vtag">✓ OATA Aligned</span>
+        <span class="vtag">✓ UK Captive Breeder</span>
+      </div>
+      <div style="margin-top:10px">
+        <div class="glabel">Licence Reference</div>
+        <div style="font-size:12px;font-weight:700;color:#333;font-family:monospace">AAL-2026-CR-00421</div>
+      </div>
+      <div style="margin-top:8px">
+        <div class="glabel">Location</div>
+        <div style="font-size:13px;font-weight:700;color:#102030">Croydon, Greater London, UK</div>
+      </div>
+    </div>
+
+    <!-- Chain of Custody -->
+    <div class="card">
+      <div class="card-title">Chain of Custody</div>
+      <div>
+        <div class="timeline-row">
+          <div class="rail"><div class="dot"></div><div class="tline"></div></div>
+          <div style="padding-bottom:16px">
+            <div class="custody-role">Breeder <span>✓ Verified</span></div>
+            <div class="custody-name">AquAi Aquatics</div>
+            <div class="custody-meta">Croydon, UK · 08 Jun 2026</div>
+            <div class="custody-meta">Passport generated at point of sale</div>
+          </div>
+        </div>
+        <div class="timeline-row">
+          <div class="rail"><div class="dot-empty"></div></div>
+          <div>
+            <div class="custody-role" style="color:#888">New Owner</div>
+            <div class="custody-name" style="color:#aaa">Awaiting transfer</div>
+            <div class="custody-meta">Scan QR or tap below to claim ownership</div>
+            <button class="claim-btn" onclick="claimPassport()">📲 Claim This Fish</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── TAB: HEALTH ── -->
+  <div class="content" id="tab-health">
+    <div class="card">
+      <div class="card-title">Health Status at Transfer</div>
+      <div class="health-item"><span class="health-label">Overall health</span><span class="health-val status-ok">✓ Excellent</span></div>
+      <div class="health-item"><span class="health-label">Last health check</span><span class="health-val">06 Jun 2026</span></div>
+      <div class="health-item"><span class="health-label">Feeding status</span><span class="health-val status-ok">✓ Feeding confidently</span></div>
+      <div class="health-item"><span class="health-label">Fins &amp; body</span><span class="health-val status-ok">✓ No damage observed</span></div>
+      <div class="health-item"><span class="health-label">Quarantine completed</span><span class="health-val status-ok">✓ Yes (14 days)</span></div>
+      <div class="health-item"><span class="health-label">Disease history</span><span class="health-val status-ok">✓ None</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Medication &amp; Treatment History</div>
+      <div class="health-item"><span class="health-label">Treatments administered</span><span class="health-val status-ok">None required</span></div>
+      <div class="health-item"><span class="health-label">Parasite treatment</span><span class="health-val status-ok">✓ Preventative — Jun 2026</span></div>
+      <div class="health-item"><span class="health-label">Antibiotics used</span><span class="health-val status-ok">None</span></div>
+      <div class="health-item"><span class="health-label">Withdrawal period</span><span class="health-val">N/A</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Water Parameters at Origin</div>
+      <div class="param-row"><div><div class="param-name">Temperature</div><div class="param-bar"><div class="param-fill" style="width:70%"></div></div></div><div class="param-val">26°C</div></div>
+      <div class="param-row"><div><div class="param-name">pH</div><div class="param-bar"><div class="param-fill" style="width:55%"></div></div></div><div class="param-val">7.0</div></div>
+      <div class="param-row"><div><div class="param-name">Hardness (GH)</div><div class="param-bar"><div class="param-fill" style="width:40%"></div></div></div><div class="param-val">8 dGH</div></div>
+      <div class="param-row"><div><div class="param-name">Ammonia</div><div class="param-bar"><div class="param-fill" style="width:5%;background:#1a7a50"></div></div></div><div class="param-val status-ok">0 ppm</div></div>
+      <div class="param-row"><div><div class="param-name">Nitrite</div><div class="param-bar"><div class="param-fill" style="width:5%;background:#1a7a50"></div></div></div><div class="param-val status-ok">0 ppm</div></div>
+      <div class="param-row"><div><div class="param-name">Nitrate</div><div class="param-bar"><div class="param-fill" style="width:20%"></div></div></div><div class="param-val">10 ppm</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Seller Guarantee</div>
+      <div style="font-size:13px;color:#333;line-height:1.7">
+        <strong>DOA Policy:</strong> 24-hour dead on arrival guarantee with photographic evidence.<br>
+        <strong>Acclimation support:</strong> Breeder available via message for 48 hours post-transfer.<br>
+        <strong>Returns:</strong> Not applicable once fish has been transferred to buyer's water.
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB: COMPLIANCE ── -->
+  <div class="content" id="tab-compliance">
+    <div class="card-dark">
+      <div class="card-title-light">Regulatory Alignment</div>
+
+      <div class="comp-item">
+        <div class="comp-icon">🏛️</div>
+        <div>
+          <div class="comp-title">CITES Status</div>
+          <div class="comp-desc">Betta splendens is not listed under CITES Appendices I or II. No export permit required for domestic UK trade. International trade may require country-specific documentation.</div>
+          <span class="comp-ref">Status: Not Listed</span>
+        </div>
+      </div>
+
+      <div class="comp-item">
+        <div class="comp-icon">🇬🇧</div>
+        <div>
+          <div class="comp-title">Animal Activities Licence (UK)</div>
+          <div class="comp-desc">This breeder holds a valid Animal Activities Licence issued under UK legislation. Licence verified at passport creation.</div>
+          <span class="comp-ref">AAL-2026-CR-00421</span>
+        </div>
+      </div>
+
+      <div class="comp-item">
+        <div class="comp-icon">🐟</div>
+        <div>
+          <div class="comp-title">OATA Code of Conduct</div>
+          <div class="comp-desc">This passport was issued in alignment with the Ornamental Aquatic Trade Association standards for animal welfare, water quality, transport and livestock management.</div>
+          <span class="comp-ref">OATA Aligned</span>
+        </div>
+      </div>
+
+      <div class="comp-item">
+        <div class="comp-icon">🇪🇺</div>
+        <div>
+          <div class="comp-title">EU Digital Product Passport</div>
+          <div class="comp-desc">This passport is structured in alignment with the EU Digital Product Passport framework (ESPR Regulation), including unique identifier, lifecycle records, sustainability data, and ownership transfer capability.</div>
+          <span class="comp-ref">EU DPP Aligned</span>
+        </div>
+      </div>
+
+      <div class="comp-item">
+        <div class="comp-icon">🌿</div>
+        <div>
+          <div class="comp-title">Sustainability Declaration</div>
+          <div class="comp-desc">Captive bred in the UK. No wild capture. No long-haul air freight. Raised under monitored water quality conditions with documented zero mortality in this spawn batch.</div>
+          <span class="comp-ref">Carbon Score: A (0.2 kg CO₂)</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="card-dark" style="margin-top:14px">
+      <div class="card-title-light">Legal Disclaimer</div>
+      <div style="font-size:12px;color:#aaa;line-height:1.7">
+        The AquAi Sourcing Passport is a voluntary supplementary traceability record. All information is self-declared by the issuing breeder or supplier. This document does not replace any legally required permit, Animal Health Certificate, CITES permit, or other regulatory documentation. AquAi Tech accepts no liability for inaccurate declarations made by third parties.
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB: ACCLIMATION ── -->
+  <div class="content" id="tab-acclimation">
+    <div class="card-dark" style="margin-bottom:14px">
+      <div class="card-title-light">Auto-Generated Acclimation Guide</div>
+      <div style="font-size:12px;color:#aaa;margin-bottom:16px">Based on water parameters recorded at origin. Follow these steps to minimise stress and maximise survival.</div>
+
+      <div class="acclim-step">
+        <div class="acclim-num">1</div>
+        <div class="acclim-text">
+          <div class="atitle">Float the bag for 15 minutes</div>
+          <div class="adesc">Allow the bag to float in your tank to equalise temperature. This fish was raised at 26°C — match this before release.</div>
+        </div>
+      </div>
+
+      <div class="acclim-step">
+        <div class="acclim-num">2</div>
+        <div class="acclim-text">
+          <div class="atitle">Drip acclimate for 30–45 minutes</div>
+          <div class="adesc">Slowly introduce your tank water into the bag. Origin pH was 7.0 — if your tank is above 7.4, extend drip time to 60 minutes.</div>
+        </div>
+      </div>
+
+      <div class="acclim-step">
+        <div class="acclim-num">3</div>
+        <div class="acclim-text">
+          <div class="atitle">Match hardness gradually</div>
+          <div class="adesc">This fish was raised in 8 dGH water. If your hardness differs by more than 4 dGH, extend acclimation or use conditioning additives.</div>
+        </div>
+      </div>
+
+      <div class="acclim-step">
+        <div class="acclim-num">4</div>
+        <div class="acclim-text">
+          <div class="atitle">Release without bag water</div>
+          <div class="adesc">Use a net to transfer the fish — do not add breeder water to your tank. Offer food after 24 hours once the fish is settled.</div>
+        </div>
+      </div>
+
+      <div class="acclim-step">
+        <div class="acclim-num">5</div>
+        <div class="acclim-text">
+          <div class="atitle">Monitor for 48 hours</div>
+          <div class="adesc">Watch for clamped fins, hiding, or refusal to eat. Contact the breeder within 24 hours if DOA or serious concerns arise.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Ideal Ongoing Parameters</div>
+      <div class="param-row"><div class="param-name">Temperature</div><div class="param-val">24–28°C</div></div>
+      <div class="param-row"><div class="param-name">pH</div><div class="param-val">6.5–7.5</div></div>
+      <div class="param-row"><div class="param-name">Hardness</div><div class="param-val">5–15 dGH</div></div>
+      <div class="param-row"><div class="param-name">Ammonia</div><div class="param-val">0 ppm always</div></div>
+      <div class="param-row"><div class="param-name">Nitrate</div><div class="param-val">Under 20 ppm</div></div>
+      <div class="param-row"><div class="param-name">Min tank size</div><div class="param-val">15 litres (solo)</div></div>
+    </div>
+  </div>
+
+  <!-- ── TAB: BATCH ── -->
+  <div class="content" id="tab-batch">
+    <div class="card-dark">
+      <div class="card-title-light">Spawn Batch · SP-2026-003</div>
+      <div style="font-size:12px;color:#aaa;margin-bottom:14px">18 fish from this spawn. Tap any passport ID to view its record.</div>
+
+      <div class="batch-fish">
+        <div><div class="batch-id">BP-2026-001</div><div class="batch-detail">Male · Red/Blue HM · This passport</div></div>
+        <span class="batch-status bs-claimed">Issued</span>
+      </div>
+      <div class="batch-fish">
+        <div><div class="batch-id">BP-2026-002</div><div class="batch-detail">Male · Navy Plakat</div></div>
+        <span class="batch-status bs-available">Available</span>
+      </div>
+      <div class="batch-fish">
+        <div><div class="batch-id">BP-2026-003</div><div class="batch-detail">Female · Red/Blue</div></div>
+        <span class="batch-status bs-available">Available</span>
+      </div>
+      <div class="batch-fish">
+        <div><div class="batch-id">BP-2026-004</div><div class="batch-detail">Female · Blue</div></div>
+        <span class="batch-status bs-available">Available</span>
+      </div>
+      <div class="batch-fish">
+        <div><div class="batch-id">BP-2026-005</div><div class="batch-detail">Male · Dark Navy</div></div>
+        <span class="batch-status bs-claimed">Claimed</span>
+      </div>
+      <div style="text-align:center;padding-top:12px">
+        <span style="font-size:12px;color:#556">+13 more fish in this spawn · Login to view all</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Spawn Information</div>
+      <div class="health-item"><span class="health-label">Spawn date</span><span class="health-val">March 2026</span></div>
+      <div class="health-item"><span class="health-label">Sire (father)</span><span class="health-val">AQA-M-2024-017</span></div>
+      <div class="health-item"><span class="health-label">Dam (mother)</span><span class="health-val">AQA-F-2024-009</span></div>
+      <div class="health-item"><span class="health-label">Fry raised on</span><span class="health-val">BBS + Microworms</span></div>
+      <div class="health-item"><span class="health-label">Batch mortality</span><span class="health-val status-ok">0% (0/18)</span></div>
+    </div>
+  </div>
+
+  <!-- ── TAB: VERIFY ── -->
+  <div class="content" id="tab-verify">
+    <div class="qr-section">
+      <div class="qr-label">Scan to verify this passport is genuine</div>
+      <div class="qr-box">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <rect width="100" height="100" fill="white"/>
+          <rect x="5" y="5" width="25" height="25" fill="#102030"/><rect x="8" y="8" width="19" height="19" fill="white"/><rect x="11" y="11" width="13" height="13" fill="#102030"/>
+          <rect x="70" y="5" width="25" height="25" fill="#102030"/><rect x="73" y="8" width="19" height="19" fill="white"/><rect x="76" y="11" width="13" height="13" fill="#102030"/>
+          <rect x="5" y="70" width="25" height="25" fill="#102030"/><rect x="8" y="73" width="19" height="19" fill="white"/><rect x="11" y="76" width="13" height="13" fill="#102030"/>
+          <rect x="35" y="5" width="5" height="5" fill="#102030"/><rect x="45" y="5" width="5" height="5" fill="#102030"/><rect x="55" y="5" width="5" height="5" fill="#102030"/>
+          <rect x="35" y="15" width="5" height="5" fill="#102030"/><rect x="55" y="25" width="5" height="5" fill="#102030"/>
+          <rect x="35" y="35" width="5" height="5" fill="#102030"/><rect x="45" y="35" width="5" height="5" fill="#102030"/>
+          <rect x="5" y="35" width="5" height="5" fill="#102030"/><rect x="15" y="35" width="5" height="5" fill="#102030"/>
+          <rect x="5" y="45" width="5" height="5" fill="#102030"/><rect x="15" y="55" width="5" height="5" fill="#102030"/>
+          <rect x="35" y="45" width="5" height="5" fill="#102030"/><rect x="45" y="55" width="5" height="5" fill="#102030"/>
+          <rect x="55" y="45" width="5" height="5" fill="#102030"/><rect x="65" y="45" width="5" height="5" fill="#102030"/>
+          <rect x="75" y="35" width="5" height="5" fill="#102030"/><rect x="85" y="45" width="5" height="5" fill="#102030"/>
+          <rect x="65" y="55" width="5" height="5" fill="#102030"/><rect x="75" y="65" width="5" height="5" fill="#102030"/>
+          <rect x="35" y="65" width="5" height="5" fill="#102030"/><rect x="45" y="75" width="5" height="5" fill="#102030"/>
+          <rect x="55" y="65" width="5" height="5" fill="#102030"/><rect x="65" y="75" width="5" height="5" fill="#102030"/>
+          <rect x="85" y="65" width="5" height="5" fill="#102030"/><rect x="85" y="85" width="5" height="5" fill="#102030"/>
+          <text x="50" y="56" text-anchor="middle" font-size="7" font-weight="bold" fill="#00C9B1" font-family="Arial">AquAi</text>
+        </svg>
+      </div>
+      <div class="qr-url">aquaiaquatics.com/passport/BP-2026-001</div>
+      <div class="btn-row">
+        <button class="btn-teal" onclick="sharePassport()">📤 Share Passport</button>
+        <button class="btn-outline" onclick="downloadPDF()">⬇ Download PDF</button>
+      </div>
+    </div>
+
+    <div class="card-dark">
+      <div class="card-title-light">Verification Status</div>
+      <div class="comp-item">
+        <div class="comp-icon">✅</div>
+        <div>
+          <div class="comp-title">Passport Verified</div>
+          <div class="comp-desc">This record is genuine and was created by a verified AquAi account. Passport data has not been altered since creation.</div>
+        </div>
+      </div>
+      <div class="comp-item" style="border:none">
+        <div class="comp-icon">🔒</div>
+        <div>
+          <div class="comp-title">Tamper-Evident Record</div>
+          <div class="comp-desc">Any alteration to this passport invalidates the verification signature. Report suspected fraud to AquAi Tech.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- END PAGE 1 -->
+
+
+<!-- ══ PAGE 2: WHY IT MATTERS ══ -->
+<div class="page" id="page-why">
+  <div class="why-page">
+
+    <div class="why-hero">
+      <h1>Why the <span>AquAi Passport</span> is changing the aquatic industry</h1>
+      <p>For the first time, every fish has a verified identity — from the moment it hatches to the moment it enters your tank.</p>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-box"><div class="stat-num">73%</div><div class="stat-lbl">max mortality rate in ornamental fish transport without proper data</div></div>
+      <div class="stat-box"><div class="stat-num">0</div><div class="stat-lbl">digital traceability standards existed for ornamental fish before AquAi</div></div>
+      <div class="stat-box"><div class="stat-num">£1B+</div><div class="stat-lbl">UK ornamental fish market with no chain-of-custody standard</div></div>
+    </div>
+
+    <div class="card-dark">
+      <div class="section-title">How it works</div>
+      <div class="how-step">
+        <div class="how-num">1</div>
+        <div class="how-text"><h3>Breeder creates the passport</h3><p>When a fish is ready to sell, the breeder logs in, fills in the species, health, water parameters and their verified identity. A unique passport ID is generated instantly.</p></div>
+      </div>
+      <div class="how-step">
+        <div class="how-num">2</div>
+        <div class="how-text"><h3>Passport travels with the fish</h3><p>A QR code is attached to the bag, box, or listing. Every handler in the chain can scan it to verify the fish's identity and update the custody record.</p></div>
+      </div>
+      <div class="how-step">
+        <div class="how-num">3</div>
+        <div class="how-text"><h3>Buyer scans and claims</h3><p>The new owner scans the QR, claims the fish, and instantly receives a personalised acclimation guide based on the origin water parameters. The chain of custody is complete.</p></div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:14px">
+      <div class="section-title">Who it's for</div>
+      <div class="why-grid">
+        <div class="why-item"><div class="why-icon">🐠</div><div class="why-who">Hobbyists</div><div class="why-what">Know exactly where your fish came from, how it was raised, and get a personalised care guide the moment you buy.</div></div>
+        <div class="why-item"><div class="why-icon">🏪</div><div class="why-who">Retailers</div><div class="why-what">Prove welfare compliance instantly. Reduce disputes. Give customers confidence that drives repeat business.</div></div>
+        <div class="why-item"><div class="why-icon">🔬</div><div class="why-who">Breeders</div><div class="why-what">Document your work, build a verified reputation, and command premium prices for verified captive-bred stock.</div></div>
+        <div class="why-item"><div class="why-icon">🚢</div><div class="why-who">Wholesalers</div><div class="why-what">Meet emerging OATA and EU traceability requirements. Reduce mortality through better data at every transfer point.</div></div>
+        <div class="why-item"><div class="why-icon">🌿</div><div class="why-who">Sustainability</div><div class="why-what">Confirm captive-bred status, calculate carbon footprint, and reduce pressure on wild-caught fish populations globally.</div></div>
+        <div class="why-item"><div class="why-icon">🏛️</div><div class="why-who">Regulators</div><div class="why-what">The first purpose-built ornamental fish traceability standard — aligned with OATA, CITES, UK AAL and EU DPP frameworks.</div></div>
+      </div>
+    </div>
+
+    <div class="cta-box">
+      <h2>Create your first passport free</h2>
+      <p>Join the breeders, retailers and wholesalers building the future of the ornamental fish trade.</p>
+      <button onclick="showNav('passport')">Get Started →</button>
+    </div>
+
+  </div>
+</div>
+<!-- END PAGE 2 -->
+
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="nav-item active" id="nav-passport" onclick="showNav('passport')">
+    <div class="nav-icon">🐠</div>Passport
+  </div>
+  <div class="nav-item" id="nav-why" onclick="showNav('why')">
+    <div class="nav-icon">💡</div>Why It Matters
+  </div>
+</div>
+
+<!-- DISCLAIMER -->
+<div class="disclaimer" id="main-disclaimer">
+  The AquAi Sourcing Passport is a voluntary traceability record. Information is self-declared by the issuing breeder or supplier. This document does not replace any legally required permit, certificate or licence. · <a href="#">aquaiaquatics.com</a> · <a href="#">Privacy Policy</a>
+</div>
+
+<script>
+  function showTab(id, el) {
+    document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    el.classList.add('active');
+  }
+
+  function showNav(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    document.getElementById('nav-' + page).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function claimPassport() {
+    alert('🐠 Claim ownership\n\nCreate a free AquAi account to claim this passport and complete the chain of custody.\n\nVisit: aquaiaquatics.com/signup');
+  }
+
+  function sharePassport() {
+    if (navigator.share) {
+      navigator.share({title: 'AquAi Passport BP-2026-001', text: 'Verified Betta splendens sourcing passport', url: 'https://aquaiaquatics.com/passport/BP-2026-001'});
+    } else {
+      alert('Share link copied!\n\naquaiaquatics.com/passport/BP-2026-001');
+    }
+  }
+
+  function downloadPDF() {
+    alert('📄 PDF download\n\nA downloadable PDF certificate will be available once you log in to your AquAi account.');
+  }
+
+  function searchPassport() {
+    const val = document.getElementById('searchInput').value.trim();
+    if (!val) return;
+    if (val.toUpperCase() === 'BP-2026-001') {
+      alert('✅ Passport Verified\n\nBP-2026-001 is a genuine AquAi passport.\nSpecies: Betta splendens\nBreeder: AquAi Aquatics\nIssued: 08 Jun 2026');
+    } else {
+      alert('❌ Passport not found\n\n' + val + ' was not found in the AquAi registry.\n\nIf you believe this is an error, contact the seller and report to AquAi Tech.');
+    }
+  }
+</script>
+
+</body>
+</html>
